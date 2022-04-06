@@ -29,11 +29,9 @@ DEALINGS IN THE SOFTWARE.
 
 void _init_vita_heap();
 void _init_vita_reent();
-void _init_vita_malloc();
 void _init_vita_io();
 
 void _free_vita_io();
-void _free_vita_malloc();
 void _free_vita_reent();
 void _free_vita_heap();
 

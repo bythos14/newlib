@@ -81,8 +81,7 @@ am__objects_2 = lib_a-gethostbyaddr.$(OBJEXT) \
 	lib_a-inet_aton.$(OBJEXT) lib_a-inet_net_pton.$(OBJEXT) \
 	lib_a-inet_makeaddr.$(OBJEXT)
 am_lib_a_OBJECTS = lib_a-syscalls.$(OBJEXT) lib_a-access.$(OBJEXT) \
-	lib_a-sbrk.$(OBJEXT) lib_a-threading.$(OBJEXT) \
-	lib_a-mlock.$(OBJEXT) lib_a-io.$(OBJEXT) \
+	lib_a-threading.$(OBJEXT) lib_a-io.$(OBJEXT) \
 	lib_a-socket.$(OBJEXT) lib_a-dup.$(OBJEXT) \
 	lib_a-select.$(OBJEXT) lib_a-error.$(OBJEXT) \
 	lib_a-dirent.$(OBJEXT) lib_a-lcltime_r.$(OBJEXT) \
@@ -91,7 +90,7 @@ am_lib_a_OBJECTS = lib_a-syscalls.$(OBJEXT) lib_a-access.$(OBJEXT) \
 	lib_a-clock.$(OBJEXT) lib_a-pread.$(OBJEXT) \
 	lib_a-pathconf.$(OBJEXT) lib_a-fpathconf.$(OBJEXT) \
 	lib_a-poll.$(OBJEXT) lib_a-monetary.$(OBJEXT) \
-	$(am__objects_1) $(am__objects_2)
+	lib_a-malloc.$(OBJEXT) $(am__objects_1) $(am__objects_2)
 lib_a_OBJECTS = $(am_lib_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp =
@@ -222,7 +221,7 @@ NET_OBJS = gethostbyaddr.o gethostbyname.o getaddrinfo.o freeaddrinfo.o getservb
 DIRENT_OBJS = closedir.o opendir.o readdir.o readdir_r.o rewinddir.o seekdir.o telldir.o
 NET_SOURCES = net/gethostbyaddr.c net/gethostbyname.c net/getaddrinfo.c net/freeaddrinfo.c net/getservbyname.c net/inet_ntop.c net/inet_ntoa.c net/inet_netof.c net/inet_pton.c net/inet_lnaof.c net/inet_addr.c net/inet_network.c net/inet_net_ntop.c net/inet_aton.c net/inet_net_pton.c net/inet_makeaddr.c
 STUB_SOURCES = chroot.c getentropy.c groups.c
-lib_a_SOURCES = syscalls.c access.c sbrk.c threading.c mlock.c io.c socket.c dup.c select.c error.c dirent.c lcltime_r.c sleep.c usleep.c truncate.c fs.c clock.c pread.c pathconf.c fpathconf.c poll.c monetary.c ${STUB_SOURCES} ${NET_SOURCES}
+lib_a_SOURCES = syscalls.c access.c threading.c io.c socket.c dup.c select.c error.c dirent.c lcltime_r.c sleep.c usleep.c truncate.c fs.c clock.c pread.c pathconf.c fpathconf.c poll.c monetary.c malloc.c ${STUB_SOURCES} ${NET_SOURCES}
 lib_a_LIBADD = ${SOCKET_OBJS} ${NET_OBJS} ${DIRENT_OBJS}
 lib_a_CCASFLAGS = $(AM_CCASFLAGS)
 lib_a_CFLAGS = $(AM_CFLAGS)
@@ -298,23 +297,11 @@ lib_a-access.o: access.c
 lib_a-access.obj: access.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-access.obj `if test -f 'access.c'; then $(CYGPATH_W) 'access.c'; else $(CYGPATH_W) '$(srcdir)/access.c'; fi`
 
-lib_a-sbrk.o: sbrk.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-sbrk.o `test -f 'sbrk.c' || echo '$(srcdir)/'`sbrk.c
-
-lib_a-sbrk.obj: sbrk.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-sbrk.obj `if test -f 'sbrk.c'; then $(CYGPATH_W) 'sbrk.c'; else $(CYGPATH_W) '$(srcdir)/sbrk.c'; fi`
-
 lib_a-threading.o: threading.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-threading.o `test -f 'threading.c' || echo '$(srcdir)/'`threading.c
 
 lib_a-threading.obj: threading.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-threading.obj `if test -f 'threading.c'; then $(CYGPATH_W) 'threading.c'; else $(CYGPATH_W) '$(srcdir)/threading.c'; fi`
-
-lib_a-mlock.o: mlock.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-mlock.o `test -f 'mlock.c' || echo '$(srcdir)/'`mlock.c
-
-lib_a-mlock.obj: mlock.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-mlock.obj `if test -f 'mlock.c'; then $(CYGPATH_W) 'mlock.c'; else $(CYGPATH_W) '$(srcdir)/mlock.c'; fi`
 
 lib_a-io.o: io.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-io.o `test -f 'io.c' || echo '$(srcdir)/'`io.c
@@ -394,24 +381,6 @@ lib_a-pread.o: pread.c
 lib_a-pread.obj: pread.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-pread.obj `if test -f 'pread.c'; then $(CYGPATH_W) 'pread.c'; else $(CYGPATH_W) '$(srcdir)/pread.c'; fi`
 
-lib_a-chroot.o: chroot.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-chroot.o `test -f 'chroot.c' || echo '$(srcdir)/'`chroot.c
-
-lib_a-chroot.obj: chroot.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-chroot.obj `if test -f 'chroot.c'; then $(CYGPATH_W) 'chroot.c'; else $(CYGPATH_W) '$(srcdir)/chroot.c'; fi`
-
-lib_a-getentropy.o: getentropy.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-getentropy.o `test -f 'getentropy.c' || echo '$(srcdir)/'`getentropy.c
-
-lib_a-getentropy.obj: getentropy.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-getentropy.obj `if test -f 'getentropy.c'; then $(CYGPATH_W) 'getentropy.c'; else $(CYGPATH_W) '$(srcdir)/getentropy.c'; fi`
-
-lib_a-groups.o: groups.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-groups.o `test -f 'groups.c' || echo '$(srcdir)/'`groups.c
-
-lib_a-groups.obj: groups.c
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-groups.obj `if test -f 'groups.c'; then $(CYGPATH_W) 'groups.c'; else $(CYGPATH_W) '$(srcdir)/groups.c'; fi`
-
 lib_a-pathconf.o: pathconf.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-pathconf.o `test -f 'pathconf.c' || echo '$(srcdir)/'`pathconf.c
 
@@ -435,6 +404,30 @@ lib_a-monetary.o: monetary.c
 
 lib_a-monetary.obj: monetary.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-monetary.obj `if test -f 'monetary.c'; then $(CYGPATH_W) 'monetary.c'; else $(CYGPATH_W) '$(srcdir)/monetary.c'; fi`
+
+lib_a-malloc.o: malloc.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-malloc.o `test -f 'malloc.c' || echo '$(srcdir)/'`malloc.c
+
+lib_a-malloc.obj: malloc.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-malloc.obj `if test -f 'malloc.c'; then $(CYGPATH_W) 'malloc.c'; else $(CYGPATH_W) '$(srcdir)/malloc.c'; fi`
+
+lib_a-chroot.o: chroot.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-chroot.o `test -f 'chroot.c' || echo '$(srcdir)/'`chroot.c
+
+lib_a-chroot.obj: chroot.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-chroot.obj `if test -f 'chroot.c'; then $(CYGPATH_W) 'chroot.c'; else $(CYGPATH_W) '$(srcdir)/chroot.c'; fi`
+
+lib_a-getentropy.o: getentropy.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-getentropy.o `test -f 'getentropy.c' || echo '$(srcdir)/'`getentropy.c
+
+lib_a-getentropy.obj: getentropy.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-getentropy.obj `if test -f 'getentropy.c'; then $(CYGPATH_W) 'getentropy.c'; else $(CYGPATH_W) '$(srcdir)/getentropy.c'; fi`
+
+lib_a-groups.o: groups.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-groups.o `test -f 'groups.c' || echo '$(srcdir)/'`groups.c
+
+lib_a-groups.obj: groups.c
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-groups.obj `if test -f 'groups.c'; then $(CYGPATH_W) 'groups.c'; else $(CYGPATH_W) '$(srcdir)/groups.c'; fi`
 
 lib_a-gethostbyaddr.o: net/gethostbyaddr.c
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(lib_a_CFLAGS) $(CFLAGS) -c -o lib_a-gethostbyaddr.o `test -f 'net/gethostbyaddr.c' || echo '$(srcdir)/'`net/gethostbyaddr.c
